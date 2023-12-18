@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express(); // Use 'express.Router()' to create a router instance
 const {
     getPostById,
@@ -6,8 +7,10 @@ const {
     createPost,
     updatePost,
     deletePost,
-    getLatestPosts,
     getTotalLikes,
+    likePost,
+    unlikePost,
+    checkIfUserLikedPost,
 } = require('../controllers/userController');
 
 router.get('/', async (req, res) => {
@@ -59,34 +62,47 @@ router.delete('/delete/:postId', async (req, res) => {
     }
 });
 
-router.get('/posts/:postId/likes', async (req, res) => {
-    try{
-        const { postId } = req.params;
-        const result = await getTotalLikes({ postId });
-        res.status(200).send(result);
-    } catch (error) {
+router.post('/likes/:postId', async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const hasLiked = checkIfUserLikedPost(postId);
+        if (hasLiked) {
+          return res.status(400).json({ error: 'User has already liked the post' });
+        }
+        // If the user hasn't liked the post, proceed with liking
+        const likes = await likePost(postId);
+        res.json({ likes });
+      } catch (error) {
         console.error(error);
-        res.status(500).send(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+});
+
+router.delete('/likes/:postId', async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const hasLiked = await checkIfUserLikedPost( postId);
+      if (!hasLiked) {
+        return res.status(400).json({ error: 'User has not liked the post' });
+      }
+      // If the user has liked the post, proceed with unliking
+      const likes = await unlikePost(postId);
+      res.json({ likes });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
 });
   
-router.get('/posts/latest', async (req, res) => {
-    try {
-        const result = "";
-        res.status(200).send(result);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
-    }
-});
+
 
 router.get('/like', async (req, res) => {
     try {
-        const result = await getlikes();
-        res.status(200).send(result);
+      const totalLikes = await getTotalLikes();
+      res.json({ totalLikes });
     } catch (error) {
-        console.error(error);
-        res.status(500).send(error);
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
