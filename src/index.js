@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const userRoute = require('./controllers/userRoute');
+const userRoute = require('../src/router/userRouter');
 
 router.get('/healthCheck', (req, res) => {
   const data = {
@@ -12,4 +12,5 @@ router.get('/healthCheck', (req, res) => {
 router.use('/posts', userRoute);
 
 module.exports = router;
+
 

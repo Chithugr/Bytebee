@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const Post = require('./userMode');
+const Post = require('../models/userModel');
 
 async function getPostById({ postId }) {
     try {
@@ -73,9 +73,6 @@ async function getLatestPosts() {
         throw error;
     }
 }
-
-
-
 
 module.exports = {
     getPostById,
