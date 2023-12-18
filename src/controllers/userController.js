@@ -21,13 +21,12 @@ const getAllPosts = async () => {
     // Retrieve all posts from the database and send the response
 }
 
-async function createPost({ title, description, likes }) {
+async function createPost({ title, description }) {
     try {
         const newPost = new Post({
             postId: uuidv4(),
             title: title,
             description: description,
-            likes: likes
         })
 
         return await newPost.save();
@@ -37,7 +36,7 @@ async function createPost({ title, description, likes }) {
     }
 }
 
-async function updatePost({ postId, title, description, likes }) {
+async function updatePost({ postId, title, description }) {
     try {
         const dataToUpdate = {};
         if (title) {
@@ -46,9 +45,7 @@ async function updatePost({ postId, title, description, likes }) {
         if (description) {
             dataToUpdate.description = description;
         }
-        if (likes) {
-            dataToUpdate.likes = likes;
-        }
+        
         const updatePost = await Post.findOneAndUpdate({ postId }, dataToUpdate, { new: true });
         return updatePost;
     } catch (error) {

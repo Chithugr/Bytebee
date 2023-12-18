@@ -39,7 +39,7 @@ router.put('/update/:postId', async (req, res) => {
     try {
         const { title, description } = req.body;
         const { postId} = req.params;
-        const result = await updatePost({ title, description })
+        const result = await updatePost({ postId, title, description })
         res.status(204).send(result);
 
     } catch (error) {
@@ -47,9 +47,8 @@ router.put('/update/:postId', async (req, res) => {
         res.status(500).send(error);
     }
 });
-router.delete('delete/:postId', async (req, res) => {
+router.delete('/delete/:postId', async (req, res) => {
     try {
-
         const result = await deletePost({ postId });
         res.status(200).send(result);
 
@@ -61,34 +60,24 @@ router.delete('delete/:postId', async (req, res) => {
 
 router.post('/posts/:postId/likes', (req, res) => {
     const postId = req.params.postId;
-  
-    // Check if the post exists
-    if (!postLikes[postId]) {
-      postLikes[postId] = 0;
-    }
-    // Increment the number of likes
-    postLikes[postId]++;
-  
     res.json({ likes: postLikes[postId] });
   });
   
-  // Endpoint to remove a like from a post
-  router.delete('/posts/:postId/likes', (req, res) => {
+// Endpoint to remove a like from a post
+router.delete('/posts/:postId/likes', (req, res) => {
     const postId = req.params.postId;
   
     // Check if the post exists
     if (!postLikes[postId]) {
       postLikes[postId] = 0;
     }
-  
-    // Decrement the number of likes (minimum 0)
     postLikes[postId] = Math.max(0, postLikes[postId] - 1);
   
     res.json({ likes: postLikes[postId] });
   });
   
   // Endpoint to get the number of likes for a post
-  router.get('/posts/:postId/likes', (req, res) => {
+router.get('/posts/:postId/likes', (req, res) => {
     const postId = req.params.postId;
   
     // Check if the post exists
@@ -97,7 +86,7 @@ router.post('/posts/:postId/likes', (req, res) => {
     }
   
     res.json({ likes: postLikes[postId] });
-  });
+});
 
 router.get('/latest', async (req, res) => {
     try {
