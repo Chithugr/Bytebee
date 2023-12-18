@@ -7,6 +7,7 @@ const {
     updatePost,
     deletePost,
     getLatestPosts,
+    getTotalLikes,
 } = require('../controllers/userController');
 
 router.get('/', async (req, res) => {
@@ -49,44 +50,27 @@ router.put('/update/:postId', async (req, res) => {
 });
 router.delete('/delete/:postId', async (req, res) => {
     try {
-        const result = await deletePost({ postId });
+        const { postId} = req.params;
+        const result = await deletePost({postId});
         res.status(200).send(result);
-
     } catch (error) {
         console.error(error);
         res.status(500).send(error);
     }
 });
 
-router.post('/posts/:postId/likes', (req, res) => {
-    const postId = req.params.postId;
-    res.json({ likes: postLikes[postId] });
+router.get('/posts/:postId/likes', async (req, res) => {
+    try{
+        const { postId } = req.params;
+        const result = await getTotalLikes({ postId });
+        res.status(200).send(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
 });
   
-// Endpoint to remove a like from a post
-router.delete('/delete/:postId', async (req, res) => {
-    try {
-      const { postId } = req.params;
-      const result = await deletePost({ postId });
-      res.status(200).send(result);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
-    }
-  });
-// router.delete('/posts/:postId/likes', (req, res) => {
-//     const postId = req.params.postId;
-  
-//     // Check if the post exists
-//     if (!postLikes[postId]) {
-//       postLikes[postId] = 0;
-//     }
-//     postLikes[postId] = Math.max(0, postLikes[postId] - 1);
-  
-//     res.json({ likes: postLikes[postId] });
-//   });
-
-router.get('/posts/like', async (req, res) => {
+router.get('/posts/latest', async (req, res) => {
     try {
         const result = "";
         res.status(200).send(result);
@@ -96,7 +80,7 @@ router.get('/posts/like', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/like', async (req, res) => {
     try {
         const result = await getlikes();
         res.status(200).send(result);

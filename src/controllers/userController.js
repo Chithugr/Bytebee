@@ -55,6 +55,17 @@ async function updatePost({ postId, title, description }) {
 
 }
 
+// Calculate the total likes from the postLikes object or your database
+const getTotalLikes = async() => {
+    try{
+        const totalLikes = Object.values(postLikes).reduce((acc, curr) => acc + curr, 0);
+        return totalLikes;
+    }catch{
+        return 0;
+    }
+    
+  };
+
 async function deletePost({ postId }) {
     try {
         const result = await Post.deleteOne({ postId });
@@ -81,4 +92,5 @@ module.exports = {
     updatePost,
     deletePost,
     getLatestPosts,
+    getTotalLikes,
 }
